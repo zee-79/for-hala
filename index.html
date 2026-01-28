@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>My Forever Valentine</title>
+
+  <style>
+    :root{
+      --bg1:#f2e7ff;
+      --bg2:#e9d6ff;
+      --text:#2b1b3a;
+      --muted: rgba(43,27,58,.72);
+
+      --card: rgba(255,255,255,.68);
+      --border: rgba(120, 70, 180, .18);
+      --shadow: 0 18px 55px rgba(40, 10, 70, .18);
+
+      --radius: 22px;
+      --max: 980px;
+      --sans: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: var(--sans);
+      color: var(--text);
+      background:
+        radial-gradient(1200px 600px at 20% 10%, #ffffff88, transparent 60%),
+        radial-gradient(900px 500px at 80% 30%, #ffffff66, transparent 55%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      overflow-x:hidden;
+    }
+
+    /* Floating background layer */
+    .floatLayer{
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .floatItem{
+      position:absolute;
+      opacity: .22;
+      animation: floatUp linear infinite;
+      transform: translateY(110vh);
+      user-select:none;
+      will-change: transform;
+    }
+
+    @keyframes floatUp{
+      0%   { transform: translateY(110vh) rotate(0deg); }
+      100% { transform: translateY(-140vh) rotate(22deg); }
+    }
+
+    /* asset-based float images */
+    .floatImg{
+      display:block;
+      width: var(--w, 52px);
+      height: auto;
+      filter: drop-shadow(0 10px 20px rgba(40,10,70,.15));
+    }
+
+    /* floating cat asset (extra cute + slightly more visible) */
+    .floatCat{
+      opacity: .32;
+    }
+    .floatCat .floatImg{
+      width: var(--w, 78px);
+      border-radius: 18px;
+      box-shadow: 0 18px 50px rgba(40,10,70,.20);
+    }
+
+    /* Content */
+    .wrap{
+      position: relative;
+      z-index: 1;
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 48px 18px 70px;
+    }
+
+    .card{
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 22px;
+    }
+
+    header{
+      text-align:center;
+      margin-bottom: 20px;
+    }
+    .badge{
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.55);
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 22px rgba(40, 10, 70, .10);
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: .2px;
+    }
+    h1{
+      margin: 14px 0 8px;
+      font-size: clamp(26px, 4vw, 44px);
+      line-height: 1.1;
+    }
+    p.sub{
+      margin: 0 auto;
+      max-width: 700px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    /* Screens */
+    .screen{ display:none; }
+    .screen.active{ display:block; }
+
+    .introBox{
+      display:flex;
+      flex-direction:column;
+      gap: 14px;
+      align-items:center;
+      text-align:center;
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.55);
+      border: 1px solid rgba(120,70,180,.14);
+    }
+
+    .typeLine{
+      font-size: 18px;
+      color: rgba(43,27,58,.85);
+      min-height: 28px;
+    }
+
+    .progressDots{
+      display:flex;
+      gap: 6px;
+      margin-top: 6px;
+      opacity: .65;
+    }
+    .dot{
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(43,27,58,.35);
+    }
+    .dot.on{ background: rgba(43,27,58,.8); }
+
+    .btnRow{
+      display:flex;
+      justify-content:center;
+      gap: 12px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    button{
+      border: 1px solid rgba(120,70,180,.22);
+      background: rgba(255,255,255,.75);
+      padding: 10px 14px;
+      border-radius: 999px;
+      cursor:pointer;
+      font: inherit;
+      color: var(--text);
+      box-shadow: 0 10px 22px rgba(40, 10, 70, .10);
+      transition: transform .12s ease;
+    }
+    button:hover{ transform: translateY(-1px); }
+
+    /* Valentine question */
+    .question{
+      text-align:center;
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.55);
+      border: 1px solid rgba(120,70,180,.14);
+    }
+    .question h2{
+      margin: 6px 0 4px;
+      font-size: clamp(20px, 3vw, 28px);
+    }
+    .question p{
+      margin: 0 0 14px;
+      color: var(--muted);
+    }
+
+    .valBtns{
+      display:flex;
+      justify-content:center;
+      gap: 14px;
+      flex-wrap: wrap;
+      position: relative;
+      min-height: 64px;
+    }
+
+    #yesBtn{ font-weight: 700; transform-origin: center; }
+    #noBtn{ position: relative; }
+
+    /* Cat gallery (assets, not uploads) */
+    .galleryHeader{
+      margin: 18px 0 10px;
+      font-size: 18px;
+      font-weight: 700;
+      text-align:center;
+    }
+    .photos{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    @media (max-width: 600px){
+      .photos{ grid-template-columns: 1fr; }
+    }
+    .slot{
+      position: relative;
+      border-radius: 18px;
+      border: 1px solid rgba(120,70,180,.15);
+      background: rgba(255,255,255,.45);
+      overflow:hidden;
+      aspect-ratio: 4 / 3;
+    }
+    .slot img{
+      width:100%;
+      height:100%;
+      object-fit: cover;
+      display:block;
+    }
+    .slot .label{
+      position:absolute;
+      bottom:10px;
+      left:10px;
+      right:10px;
+      padding: 8px 10px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.65);
+      border: 1px solid rgba(120,70,180,.15);
+      color: rgba(43,27,58,.82);
+      font-size: 13px;
+      display:flex;
+      justify-content: space-between;
+      align-items:center;
+      gap: 10px;
+    }
+
+    /* Result */
+    .result{
+      text-align:center;
+      padding: 22px 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.55);
+      border: 1px solid rgba(120,70,180,.14);
+    }
+    .result h2{ margin: 0 0 8px; }
+    .result p{ margin: 0; color: var(--muted); line-height: 1.6; }
+
+    .footer{
+      margin-top: 16px;
+      text-align:center;
+      color: rgba(43,27,58,.65);
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Floating assets behind everything -->
+  <div class="floatLayer" id="floatLayer"></div>
+
+  <main class="wrap">
+    <header>
+      <div class="badge">HAPPY VALENTINE</div>
+      <h1>Made for the prettiest girl in the world</h1>
+      <p class="sub">Intro first then the question. And yes the Yes button cannot be ignored.</p>
+    </header>
+
+    <section class="card">
+
+      <!-- SCREEN 1: Intro -->
+      <div class="screen active" id="screenIntro">
+        <div class="introBox">
+          <div class="typeLine" id="typeLine"></div>
+
+          <div class="progressDots" id="dots">
+            <div class="dot on"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+          </div>
+
+          <div class="btnRow">
+            <button id="skipIntro">Skip</button>
+            <button id="nextIntro">Next</button>
+          </div>
+        </div>
+
+        <div class="galleryHeader">Lily museum</div>
+        <div class="photos">
+          <div class="slot">
+            <img src="assets/halas favorite.jpeg" alt="hala's fav" />
+            <div class="label"><span>hala's fav</span></div>
+          </div>
+          <div class="slot">
+            <img src="assets/kitten lily.jpeg" alt="tiny kitten lily" />
+            <div class="label"><span>tiny kitten lily</span></div>
+          </div>
+          <div class="slot">
+            <img src="assets/play lily.jpeg" alt="play lily" />
+            <div class="label"><span>tiny boxing lily</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCREEN 2: Question -->
+      <div class="screen" id="screenQuestion">
+        <div class="question">
+          <h2>Will you be my Valentine forever mi cangrejo?</h2>
+          <p>(it's either yes or yes btw)</p>
+
+          <div class="valBtns">
+            <button id="yesBtn">Yes</button>
+            <button id="noBtn">No</button>
+          </div>
+
+          <div class="btnRow">
+            <button id="backToIntro">Back</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCREEN 3: Result -->
+      <div class="screen" id="screenResult">
+        <div class="result">
+          <h2>YEAAAHHHHHHHHHHHHH</h2>
+          <p id="resultText">Now you’re forever stuck with me. I love you hala.</p>
+          <div class="btnRow">
+            <button id="restart">Replay</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">PS. you're my world and forever home.</div>
+    </section>
+  </main>
+
+  <script>
+    // -------------------------
+    // Floating ASSET sprites
+    // -------------------------
+    const floatLayer = document.getElementById("floatLayer");
+
+    // Put your assets here
+    const ASSETS = {
+      tulip: "assets/tulip.png",
+      lily: "assets/lily.png",
+      floatingCat: "assets/floating lily.png"
+    };
+
+    function spawnFloatSprite(type) {
+      const wrap = document.createElement("div");
+      wrap.className = "floatItem" + (type === "cat" ? " floatCat" : "");
+
+      // random horizontal position
+      wrap.style.left = (Math.random() * 100) + "vw";
+
+      // random size
+      const w = type === "cat"
+        ? (64 + Math.random() * 60)   // cat bigger
+        : (28 + Math.random() * 36);  // flowers smaller
+      wrap.style.setProperty("--w", w + "px");
+
+      // random speed
+      const duration = type === "cat"
+        ? (14 + Math.random() * 18)
+        : (10 + Math.random() * 18);
+      wrap.style.animationDuration = duration + "s";
+
+      // random opacity (cat slightly stronger)
+      wrap.style.opacity = type === "cat"
+        ? (0.22 + Math.random() * 0.22).toFixed(2)
+        : (0.10 + Math.random() * 0.22).toFixed(2);
+
+      // image element
+      const img = document.createElement("img");
+      img.className = "floatImg";
+      img.alt = type === "cat" ? "Floating cat" : "Floating flower";
+      img.decoding = "async";
+      img.loading = "lazy";
+      img.src = type === "cat"
+        ? ASSETS.floatingCat
+        : (Math.random() < 0.5 ? ASSETS.tulip : ASSETS.lily);
+
+      wrap.appendChild(img);
+      floatLayer.appendChild(wrap);
+
+      // remove after animation
+      setTimeout(() => wrap.remove(), (duration + 3) * 1000);
+    }
+
+    // seed + spawn loop
+    function seedSprites(){
+      for (let i=0; i<18; i++) spawnFloatSprite("flower");
+      for (let i=0; i<2; i++) spawnFloatSprite("cat");
+    }
+    seedSprites();
+
+    setInterval(() => spawnFloatSprite("flower"), 650);
+    setInterval(() => spawnFloatSprite("cat"), 5200); // occasional floating cat cameo
+
+    // -------------------------
+    // Screens
+    // -------------------------
+    const screens = {
+      intro: document.getElementById("screenIntro"),
+      q: document.getElementById("screenQuestion"),
+      result: document.getElementById("screenResult"),
+    };
+    function show(which){
+      Object.values(screens).forEach(s => s.classList.remove("active"));
+      screens[which].classList.add("active");
+    }
+
+    // -------------------------
+    // Intro typing / steps
+    // -------------------------
+    const lines = [
+      "Helloooo mi amor, yep I made you a little website...",
+      "this is a little thing from me to you (it'll live on forever)",
+      "plus the tulips and lilies float around for maximum love impact",
+      "alright now one important question my love... (yes we're married)"
+    ];
+
+    const typeLine = document.getElementById("typeLine");
+    const dots = Array.from(document.querySelectorAll("#dots .dot"));
+    let step = 0;
+    let typing = false;
+
+    function setDots(i){
+      dots.forEach((d, idx) => d.classList.toggle("on", idx === i));
+    }
+
+    function typeText(text){
+      typing = true;
+      typeLine.textContent = "";
+      let i = 0;
+      const speed = 18;
+      const timer = setInterval(() => {
+        typeLine.textContent += text[i];
+        i++;
+        if (i >= text.length){
+          clearInterval(timer);
+          typing = false;
+        }
+      }, speed);
+    }
+
+    function renderStep(){
+      setDots(step);
+      typeText(lines[step]);
+    }
+    renderStep();
+
+    document.getElementById("nextIntro").addEventListener("click", () => {
+      if (typing) return;
+      if (step < lines.length - 1){
+        step++;
+        renderStep();
+      } else {
+        show("q");
+      }
+    });
+
+    document.getElementById("skipIntro").addEventListener("click", () => show("q"));
+    document.getElementById("backToIntro").addEventListener("click", () => show("intro"));
+
+    // -------------------------
+    // Yes/No logic (Yes grows)
+    // -------------------------
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
+    let noCount = 0;
+    let yesScale = 1;
+
+    function updateYesSize(){
+      yesBtn.style.transform = `scale(${yesScale})`;
+    }
+
+    function wiggleNo(){
+      const dx = (Math.random() * 18 - 9);
+      const dy = (Math.random() * 10 - 5);
+      noBtn.style.transform = `translate(${dx}px, ${dy}px)`;
+      setTimeout(() => { noBtn.style.transform = "translate(0,0)"; }, 180);
+    }
+
+    const noPhrases = [
+      "No",
+      "are you sure?",
+      "this button is lying",
+      "click the other one (trust me)"
+    ];
+
+    noBtn.addEventListener("click", () => {
+      noCount++;
+      yesScale = Math.min(yesScale + 0.18, 3.2);
+      updateYesSize();
+      noBtn.textContent = noPhrases[Math.min(noCount, noPhrases.length - 1)];
+      wiggleNo();
+    });
+
+    yesBtn.addEventListener("click", () => {
+      document.getElementById("resultText").textContent =
+        "Deal sealed. I owe you tulips, a cute date, and my heart forever my pretty girl <3";
+      show("result");
+    });
+
+    document.getElementById("restart").addEventListener("click", () => {
+      step = 0;
+      noCount = 0;
+      yesScale = 1;
+      yesBtn.style.transform = "scale(1)";
+      noBtn.textContent = "No";
+      show("intro");
+      renderStep();
+    });
+  </script>
+</body>
+</html>
